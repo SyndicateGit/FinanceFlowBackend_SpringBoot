@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.financeflow</groupId>
-	<artifactId>financeflow-backend</artifactId>
+	<artifactId>financeflow_backend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>financeflow-backend</name>
-	<description>Track and visualize financial statements to help users make better financial decisions</description>
+	<name>financeflow_backend</name>
+	<description>backen for finance flow</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -39,12 +39,6 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-docker-compose</artifactId>
-			<scope>runtime</scope>
-			<optional>true</optional>
-		</dependency>
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
