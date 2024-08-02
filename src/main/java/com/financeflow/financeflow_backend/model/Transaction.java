@@ -1,4 +1,4 @@
-package com.financeflow.financeflow_backend.entity;
+package com.financeflow.financeflow_backend.model;
 import java.time.LocalDateTime;
 import java.math.BigDecimal;
 
