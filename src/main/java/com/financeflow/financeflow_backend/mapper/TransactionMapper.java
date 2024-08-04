@@ -1,13 +1,13 @@
 package com.financeflow.financeflow_backend.mapper;
 
 import com.financeflow.financeflow_backend.dto.TransactionDTO;
-import com.financeflow.financeflow_backend.model.Transaction;
+import com.financeflow.financeflow_backend.entity.Transaction;
 
 public class TransactionMapper {
     public static TransactionDTO mapToTransactionDTO(Transaction transaction){
         return new TransactionDTO(
                 transaction.getId(),
-                transaction.getAccountId(),
+                transaction.getAccount(),
                 transaction.getType(),
                 transaction.getAmount(),
                 transaction.getCurrency(),
@@ -23,7 +23,6 @@ public class TransactionMapper {
     public static Transaction mapToTransaction(TransactionDTO transactionDTO){
         return new Transaction(
                 transactionDTO.getId(),
-                transactionDTO.getAccountId(),
                 transactionDTO.getType(),
                 transactionDTO.getAmount(),
                 transactionDTO.getCurrency(),
@@ -32,7 +31,8 @@ public class TransactionMapper {
                 transactionDTO.getRecurringType(),
                 transactionDTO.getNote(),
                 transactionDTO.getCategory(),
-                transactionDTO.getDescription()
-        );
+                transactionDTO.getDescription(),
+                transactionDTO.getAccount()
+                );
     }
 }
