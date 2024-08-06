@@ -18,7 +18,7 @@ import lombok.Setter;
 public class Account {
     public enum AccountType {
         SAVINGS,
-        Debit,
+        DEBIT,
         CREDIT,
     }
     @Id
@@ -40,4 +40,28 @@ public class Account {
     public String getAccountHolderName(){
         return this.user.getName();
     }
+
+    private void initateAccount(){
+        this.balance = new BigDecimal(0);
+        this.currency = "CAD";
+
+    }
+    public void initiateSavingsAccount(User user){
+        initateAccount();
+        this.accountType = AccountType.SAVINGS;
+        this.user = user;
+    }
+
+    public void initiateDebitAccount(User user){
+        initateAccount();
+        this.accountType = AccountType.DEBIT;
+        this.user = user;
+    }
+
+    public void initiateCreditAccount(User user){
+        initateAccount();
+        this.accountType = AccountType.CREDIT;
+        this.user = user;
+    }
+
 }
