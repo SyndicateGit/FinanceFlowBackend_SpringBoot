@@ -41,4 +41,21 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
     }
 
+    public UserDTO updateUser(Long id, UserDTO userDTO) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found with given id: " + id)
+        );
+
+        user.setName(userDTO.getName());
+        user.setEmail(userDTO.getEmail());
+        user.setPassword(userDTO.getPassword());
+        user.setPhone(userDTO.getPhone());
+        user.setRole(userDTO.getRole());
+
+        userRepository.save(user);
+
+        return UserMapper.mapToUserDTO(userRepository.save(user));
+    }
+
 }

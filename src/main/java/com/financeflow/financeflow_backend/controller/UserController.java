@@ -33,4 +33,10 @@ public class UserController {
         List<UserDTO> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
     }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<UserDTO> updateUser(@PathVariable("id") Long id, @RequestBody UserDTO updatedUserDTO) {
+        UserDTO SavedUserDTO = userService.updateUser(id, updatedUserDTO);
+        return ResponseEntity.ok(SavedUserDTO);
+    }
 }
