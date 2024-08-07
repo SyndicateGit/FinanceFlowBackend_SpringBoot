@@ -2,6 +2,7 @@ package com.financeflow.financeflow_backend.mapper;
 
 import com.financeflow.financeflow_backend.dto.AccountDTO;
 import com.financeflow.financeflow_backend.entity.Account;
+import com.financeflow.financeflow_backend.entity.User;
 
 public class AccountMapper {
     public static AccountDTO mapToAccountDTO(Account account) {
@@ -14,13 +15,13 @@ public class AccountMapper {
         );
     }
 
-    public static Account mapToAccount(AccountDTO accountDTO) {
+    public static Account mapToAccount(AccountDTO accountDTO, User user) {
         return new Account(
                 accountDTO.getId(),
                 accountDTO.getAccountType(),
                 accountDTO.getBalance(),
                 accountDTO.getCurrency(),
-                null
+                user
         );
     }
 }

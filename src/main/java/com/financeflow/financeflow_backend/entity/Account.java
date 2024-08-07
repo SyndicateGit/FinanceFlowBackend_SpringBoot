@@ -41,27 +41,41 @@ public class Account {
         return this.user.getName();
     }
 
-    private void initateAccount(){
+    private void initiateAccount(){
         this.balance = new BigDecimal(0);
         this.currency = "CAD";
 
     }
     public void initiateSavingsAccount(User user){
-        initateAccount();
+        initiateAccount();
         this.accountType = AccountType.SAVINGS;
         this.user = user;
     }
 
     public void initiateDebitAccount(User user){
-        initateAccount();
+        initiateAccount();
         this.accountType = AccountType.DEBIT;
         this.user = user;
     }
 
     public void initiateCreditAccount(User user){
-        initateAccount();
+        initiateAccount();
         this.accountType = AccountType.CREDIT;
         this.user = user;
     }
 
+    public BigDecimal deposit(BigDecimal amount){
+        this.balance = this.balance.add(amount);
+        return this.balance;
+    }
+
+    public BigDecimal withdraw(BigDecimal amount){
+        this.balance = this.balance.subtract(amount);
+        return this.balance;
+    }
+
+    public void transfer(Account account, BigDecimal amount){
+        this.withdraw(amount);
+        account.deposit(amount);
+    }
 }
