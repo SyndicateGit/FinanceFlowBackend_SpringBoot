@@ -37,7 +37,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public TransactionDTO createTransaction(TransactionDTO transactionDTO, Long from_account_id, Long to_account_id) {
+    public String createTransferTransaction(TransactionDTO transactionDTO, Long from_account_id, Long to_account_id) {
         Account from_account = accountRepository
                 .findById(from_account_id)
                 .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
@@ -46,16 +46,19 @@ public class TransactionServiceImpl implements TransactionService {
                 .findById(to_account_id)
                 .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
 
-        Transaction transaction = TransactionMapper.mapToTransaction(transactionDTO);
-
-
-
+        Transaction to_transaction = TransactionMapper.mapToTransaction(transactionDTO);
+        Transaction from_transaction = TransactionMapper.mapToTransaction(transactionDTO);
         try{
-            Transaction savedTransaction = transactionRepository.save(transaction);
-            transaction.applyTransaction(from_account, to_account);
+
+            from_account.transfer(to_account, from_transaction.getAmount());
+
+            from_account.addTransaction(from_transaction);
+            to_account.addTransaction(to_transaction);
+
             accountRepository.save(from_account);
             accountRepository.save(to_account);
-            return TransactionMapper.mapToTransactionDTO(savedTransaction);
+
+            return "Transfer saved";
         } catch (Exception e){
             throw new ResourceNotFoundException("Transaction not saved");
         }

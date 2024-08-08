@@ -60,15 +60,4 @@ public class Transaction {
         }
         account.addTransaction(this);
     }
-
-    public void applyTransaction(Account fromAccount, Account toAccount){
-        this.setNote("Transfer from " + fromAccount.getAccountType() + " to " + toAccount.getAccountType());
-        this.setCategory("Transfer");
-
-        fromAccount.withdraw(this.amount);
-        fromAccount.addTransaction(this);
-
-        toAccount.deposit(this.amount);
-        toAccount.addTransaction(this);
-    }
 }

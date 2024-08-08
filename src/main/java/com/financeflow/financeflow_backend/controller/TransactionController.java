@@ -17,4 +17,12 @@ public class TransactionController {
         TransactionDTO savedTransaction = transactionService.createTransaction(transactionDTO, accountId);
         return new ResponseEntity<>(savedTransaction, HttpStatus.CREATED);
     }
+
+    @PostMapping("/create/{from_id}/{to_id}")
+    public ResponseEntity<String> createTransferTransaction(@RequestBody TransactionDTO transactionDTO,
+                                                            @PathVariable("from_id") Long fromAccountId,
+                                                            @PathVariable("to_id") Long toAccountId) {
+        String transferResult = transactionService.createTransferTransaction(transactionDTO, fromAccountId, toAccountId);
+        return new ResponseEntity<>(transferResult, HttpStatus.CREATED);
+    }
 }
