@@ -2,14 +2,15 @@ package com.financeflow.financeflow_backend.mapper;
 
 import com.financeflow.financeflow_backend.dto.TransactionDTO;
 import com.financeflow.financeflow_backend.entity.Transaction;
+import org.springframework.stereotype.Component;
 
 import static com.financeflow.financeflow_backend.mapper.AccountMapper.mapToAccountDTO;
 
+@Component
 public class TransactionMapper {
     public static TransactionDTO mapToTransactionDTO(Transaction transaction){
         return new TransactionDTO(
                 transaction.getId(),
-                mapToAccountDTO(transaction.getAccount()),
                 transaction.getType(),
                 transaction.getAmount(),
                 transaction.getCurrency(),
@@ -33,8 +34,7 @@ public class TransactionMapper {
                 transactionDTO.getRecurringType(),
                 transactionDTO.getNote(),
                 transactionDTO.getCategory(),
-                transactionDTO.getDescription(),
-                null
+                transactionDTO.getDescription()
                 );
     }
 }

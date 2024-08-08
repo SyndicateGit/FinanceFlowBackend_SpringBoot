@@ -20,26 +20,30 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     private AccountRepository accountRepository;
 
-    public void initiateAccounts(User user){
+    public User initiateAccounts(User user) {
         Account savingsAccount = new Account();
+        savingsAccount.initiateSavingsAccount();
         Account debitAccount = new Account();
+        debitAccount.initiateDebitAccount();
         Account creditAccount = new Account();
-
-        savingsAccount.initiateSavingsAccount(user);
-        debitAccount.initiateDebitAccount(user);
-        creditAccount.initiateCreditAccount(user);
-
+        creditAccount.initiateCreditAccount();
         accountRepository.save(savingsAccount);
         accountRepository.save(debitAccount);
         accountRepository.save(creditAccount);
+        user.addAccount(savingsAccount);
+        user.addAccount(debitAccount);
+        user.addAccount(creditAccount);
+        return user;
     }
     @Override
     public UserDTO createUser(UserDTO userDTO) {
         User user = UserMapper.mapToUser(userDTO);
-        User savedUser = userRepository.save(user);
-
+        // This is to check if user is savable (unique email and phone)
+        // Don't want to initiate accounts if user is not savable.
+        User savableUser = userRepository.save(user);
         // All users will have a savings, debit and credit account
-        initiateAccounts(savedUser);
+        User initiatedUser = initiateAccounts(user);
+        User  savedUser = userRepository.save(initiatedUser);
 
         return UserMapper.mapToUserDTO(savedUser);
     }
@@ -73,6 +77,9 @@ public class UserServiceImpl implements UserService {
         user.setPhone(userDTO.getPhone());
         user.setRole(userDTO.getRole());
 
+        // Accounts left as is.
+        // Update user is only for user info
+
         userRepository.save(user);
 
         return UserMapper.mapToUserDTO(userRepository.save(user));
@@ -86,5 +93,4 @@ public class UserServiceImpl implements UserService {
                 );
         userRepository.deleteById(id);
     }
-
 }

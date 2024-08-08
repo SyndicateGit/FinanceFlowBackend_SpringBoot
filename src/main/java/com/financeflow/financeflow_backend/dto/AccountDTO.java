@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Getter
 @Setter
@@ -14,11 +15,8 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class AccountDTO {
     private Long id;
-
-    private String accountHolderName;
-
     private Account.AccountType accountType;
-
     private BigDecimal balance;
     private String currency;
+    private List<Long> transactionIds;
 }

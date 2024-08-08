@@ -1,6 +1,7 @@
 package com.financeflow.financeflow_backend.entity;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -33,45 +34,34 @@ public class Account {
     private BigDecimal balance;
     private String currency;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Transaction> transactions;
 
-    public String getAccountHolderName(){
-        return this.user.getName();
-    }
-
-    private void initiateAccount(){
-        this.balance = new BigDecimal(0);
+    public void initiateAccount(){
+        this.balance = BigDecimal.ZERO;
         this.currency = "CAD";
-
     }
-    public void initiateSavingsAccount(User user){
-        initiateAccount();
+
+    public void initiateSavingsAccount(){
+        this.initiateAccount();
         this.accountType = AccountType.SAVINGS;
-        this.user = user;
     }
 
-    public void initiateDebitAccount(User user){
-        initiateAccount();
+    public void initiateDebitAccount(){
+        this.initiateAccount();
         this.accountType = AccountType.DEBIT;
-        this.user = user;
     }
 
-    public void initiateCreditAccount(User user){
-        initiateAccount();
+    public void initiateCreditAccount(){
+        this.initiateAccount();
         this.accountType = AccountType.CREDIT;
-        this.user = user;
     }
-
-    public BigDecimal deposit(BigDecimal amount){
+    public void deposit(BigDecimal amount){
         this.balance = this.balance.add(amount);
-        return this.balance;
     }
 
-    public BigDecimal withdraw(BigDecimal amount){
+    public void withdraw(BigDecimal amount){
         this.balance = this.balance.subtract(amount);
-        return this.balance;
     }
 
     public void transfer(Account account, BigDecimal amount){

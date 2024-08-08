@@ -1,11 +1,14 @@
 package com.financeflow.financeflow_backend.entity;
 
+import com.financeflow.financeflow_backend.repository.AccountRepository;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -31,4 +34,12 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Account> accounts = new ArrayList<Account>();
+
+    public User addAccount(Account account){
+        this.accounts.add(account);
+        return this;
+    }
 }

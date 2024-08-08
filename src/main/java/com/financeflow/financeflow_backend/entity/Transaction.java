@@ -43,14 +43,9 @@ public class Transaction {
     private String category;
     private String description;
 
-    @ManyToOne
-    @JoinColumn(name = "account_id", referencedColumnName = "id")
-    private Account account;
 
     public void setDate(LocalDateTime date) {
         this.date = date;
     }
-    public Account.AccountType getAccountType(){
-        return this.account.getAccountType();
-    }
+
 }

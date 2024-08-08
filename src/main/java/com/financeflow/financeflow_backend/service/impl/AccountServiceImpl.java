@@ -24,8 +24,10 @@ public class AccountServiceImpl implements AccountService {
     public AccountDTO createAccount(AccountDTO accountDTO, Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        Account account = AccountMapper.mapToAccount(accountDTO, user);
+        Account account = AccountMapper.mapToAccount(accountDTO);
         Account savedAccount = accountRepository.save(account);
+        User updatedUser = user.addAccount(savedAccount);
+        userRepository.save(updatedUser);
         return AccountMapper.mapToAccountDTO(savedAccount);
     }
 
@@ -38,7 +40,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public List<AccountDTO> getAccountsByUserId(Long userId) {
-        List<Account>  accounts = accountRepository.findAllByUserId(userId);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        List<Account> accounts = user.getAccounts();
         return accounts.stream()
                 .map(AccountMapper::mapToAccountDTO)
                 .collect(Collectors.toList());
@@ -54,12 +58,13 @@ public class AccountServiceImpl implements AccountService {
     public AccountDTO updateAccount(Long id, AccountDTO accountDTO) {
         Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
-        // Don't save accountHolderName.
-        // Responsibility is with User entity.
+
         account.setAccountType(accountDTO.getAccountType());
         account.setBalance(accountDTO.getBalance());
         account.setCurrency(accountDTO.getCurrency());
         Account updatedAccount = accountRepository.save(account);
+        // Don't update transactions.
+        // Responsibility lies with transaction service
         return AccountMapper.mapToAccountDTO(updatedAccount);
     }
 
@@ -67,6 +72,9 @@ public class AccountServiceImpl implements AccountService {
     public void deleteAccount(Long id) {
         Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
+        User user = userRepository.findByAccountsContaining(account)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        user.getAccounts().remove(account);
         accountRepository.delete(account);
     }
 
