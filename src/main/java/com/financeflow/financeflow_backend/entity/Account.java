@@ -68,4 +68,8 @@ public class Account {
         this.withdraw(amount);
         account.deposit(amount);
     }
+
+    public void addTransaction(Transaction transaction){
+        this.transactions.add(transaction);
+    }
 }
