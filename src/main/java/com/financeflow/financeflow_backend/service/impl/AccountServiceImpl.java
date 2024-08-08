@@ -74,8 +74,11 @@ public class AccountServiceImpl implements AccountService {
                 .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
         User user = userRepository.findByAccountsContaining(account)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        // Remove account from user cascades to remove account since orphanRemoval is true
+        // Deleting user also deletes account
         user.getAccounts().remove(account);
-        accountRepository.delete(account);
+        userRepository.save(user);
     }
 
     @Override
