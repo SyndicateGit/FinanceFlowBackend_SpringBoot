@@ -47,6 +47,11 @@ public class TransactionController {
         return ResponseEntity.ok(transactions);
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<List<TransactionDTO>> findAllTransactions() {
+        List<TransactionDTO> transactions = transactionService.findAllTransactions();
+        return ResponseEntity.ok(transactions);
+    }
     @DeleteMapping("/{id}")
     public ResponseEntity<String> revertTransaction(@PathVariable("id") Long id) {
         String result = transactionService.revertTransaction(id);

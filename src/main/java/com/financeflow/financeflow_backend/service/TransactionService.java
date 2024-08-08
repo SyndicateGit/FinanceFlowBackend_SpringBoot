@@ -13,5 +13,7 @@ public interface TransactionService {
 
     List<TransactionDTO> findAllTransactionsByUserId(Long userId);
 
+    List<TransactionDTO> findAllTransactions();
+
     String revertTransaction(Long id);
 }
