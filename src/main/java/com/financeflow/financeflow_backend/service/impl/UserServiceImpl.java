@@ -27,9 +27,6 @@ public class UserServiceImpl implements UserService {
         debitAccount.initiateDebitAccount();
         Account creditAccount = new Account();
         creditAccount.initiateCreditAccount();
-        accountRepository.save(savingsAccount);
-        accountRepository.save(debitAccount);
-        accountRepository.save(creditAccount);
         user.addAccount(savingsAccount);
         user.addAccount(debitAccount);
         user.addAccount(creditAccount);

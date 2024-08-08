@@ -43,9 +43,32 @@ public class Transaction {
     private String category;
     private String description;
 
-
     public void setDate(LocalDateTime date) {
         this.date = date;
     }
 
+    public void applyTransaction(Account account){
+        if(this.type.equals(TransactionType.TRANSFER)){
+            throw new IllegalArgumentException(
+                    "Use applyTransaction(Account fromAccount, Account toAccount) for transfer transactions"
+            );
+        }
+        if(this.type.equals(TransactionType.INCOME)){
+            account.deposit(this.amount);
+        } else {
+            account.withdraw(this.amount);
+        }
+        account.addTransaction(this);
+    }
+
+    public void applyTransaction(Account fromAccount, Account toAccount){
+        this.setNote("Transfer from " + fromAccount.getAccountType() + " to " + toAccount.getAccountType());
+        this.setCategory("Transfer");
+
+        fromAccount.withdraw(this.amount);
+        fromAccount.addTransaction(this);
+
+        toAccount.deposit(this.amount);
+        toAccount.addTransaction(this);
+    }
 }

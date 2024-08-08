@@ -8,6 +8,7 @@ import com.financeflow.financeflow_backend.mapper.TransactionMapper;
 import com.financeflow.financeflow_backend.repository.AccountRepository;
 import com.financeflow.financeflow_backend.repository.TransactionRepository;
 import com.financeflow.financeflow_backend.service.TransactionService;
+import jakarta.persistence.EntityManager;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 public class TransactionServiceImpl implements TransactionService {
     private TransactionRepository transactionRepository;
     private AccountRepository accountRepository;
+    private EntityManager entityManager;
     @Override
     public TransactionDTO createTransaction(TransactionDTO transactionDTO, Long accountId) {
         Account account = accountRepository
@@ -23,11 +25,41 @@ public class TransactionServiceImpl implements TransactionService {
                 .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
 
         Transaction transaction = TransactionMapper.mapToTransaction(transactionDTO);
-        Transaction savedTransaction = transactionRepository.save(transaction);
 
-        account.addTransaction(savedTransaction);
-        accountRepository.save(account);
-
-        return TransactionMapper.mapToTransactionDTO(savedTransaction);
+        try{
+            Transaction savedTransaction = transactionRepository.save(transaction);
+            savedTransaction.applyTransaction(account);
+            accountRepository.save(account);
+            return TransactionMapper.mapToTransactionDTO(savedTransaction);
+        } catch (Exception e){
+            throw new ResourceNotFoundException("Transaction not saved");
+        }
     }
+
+    @Override
+    public TransactionDTO createTransaction(TransactionDTO transactionDTO, Long from_account_id, Long to_account_id) {
+        Account from_account = accountRepository
+                .findById(from_account_id)
+                .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
+
+        Account to_account = accountRepository
+                .findById(to_account_id)
+                .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
+
+        Transaction transaction = TransactionMapper.mapToTransaction(transactionDTO);
+
+
+
+        try{
+            Transaction savedTransaction = transactionRepository.save(transaction);
+            transaction.applyTransaction(from_account, to_account);
+            accountRepository.save(from_account);
+            accountRepository.save(to_account);
+            return TransactionMapper.mapToTransactionDTO(savedTransaction);
+        } catch (Exception e){
+            throw new ResourceNotFoundException("Transaction not saved");
+        }
+    }
+
+
 }
