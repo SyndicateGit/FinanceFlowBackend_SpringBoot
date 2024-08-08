@@ -26,4 +26,5 @@ public class TransactionDTO {
     private String note;
     private String category;
     private String description;
+    private Long linkedTransactionId;
 }

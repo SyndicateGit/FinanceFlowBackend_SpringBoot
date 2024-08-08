@@ -72,4 +72,16 @@ public class Account {
     public void addTransaction(Transaction transaction){
         this.transactions.add(transaction);
     }
+
+    public void removeTransaction(Long transactionId){
+        this.transactions
+                .stream()
+                .filter(transaction -> transaction.getId().equals(transactionId))
+                .findFirst()
+                .ifPresent(transaction -> this.transactions.remove(transaction));
+    }
+
+    public void removeTransaction(Transaction transaction){
+        this.transactions.remove(transaction);
+    }
 }

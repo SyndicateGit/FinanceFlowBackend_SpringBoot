@@ -43,6 +43,9 @@ public class Transaction {
     private String category;
     private String description;
 
+    @Column(name = "linked_transaction_id")
+    private Long linkedTransactionId;
+
     public void setDate(LocalDateTime date) {
         this.date = date;
     }
@@ -59,5 +62,15 @@ public class Transaction {
             account.withdraw(this.amount);
         }
         account.addTransaction(this);
+    }
+
+    public void revertTransfer(Account fromAccount, Account toAccount){
+        if(!this.type.equals(TransactionType.TRANSFER)){
+            throw new IllegalArgumentException(
+                    "Use revertTransfer() only for transfer transactions"
+            );
+        }
+        fromAccount.deposit(this.amount);
+        toAccount.withdraw(this.amount);
     }
 }
