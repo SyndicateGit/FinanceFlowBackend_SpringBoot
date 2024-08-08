@@ -28,6 +28,7 @@ public class TransactionServiceImpl implements TransactionService {
     private UserRepository userRepository;
     private EntityManager entityManager;
     @Override
+    @Transactional
     public TransactionDTO createTransaction(TransactionDTO transactionDTO, Long accountId) {
         Account account = accountRepository
                 .findById(accountId)
@@ -133,6 +134,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
+    @Transactional
     public String revertTransaction(Long id) {
         Transaction transaction = transactionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Transaction not found"));
