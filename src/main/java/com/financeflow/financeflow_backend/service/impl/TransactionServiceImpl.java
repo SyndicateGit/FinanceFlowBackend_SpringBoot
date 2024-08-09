@@ -135,6 +135,39 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     @Transactional
+    public TransactionDTO updateTransaction(TransactionDTO transactionDTO, Long id) {
+        if(transactionDTO.getType() == TransactionType.TRANSFER){
+            throw new ResourceNotFoundException("Cannot update transfer transaction");
+        }
+
+        Transaction transaction = transactionRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Transaction not found"));
+
+        Account account = accountRepository.findByTransactionsContaining(transaction)
+                .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
+
+        revertTransaction(id);
+
+        transaction.setAmount(transactionDTO.getAmount());
+        transaction.setCategory(transactionDTO.getCategory());
+        transaction.setNote(transactionDTO.getNote());
+        transaction.setType(transactionDTO.getType());
+        transaction.setDate(transactionDTO.getDate());
+        transaction.setDescription(transactionDTO.getDescription());
+        transaction.setCurrency(transactionDTO.getCurrency());
+        transaction.setRecurring(transactionDTO.isRecurring());
+        transaction.setRecurringType(transactionDTO.getRecurringType());
+
+        Transaction savedTransaction = transactionRepository.save(transaction);
+        savedTransaction.applyTransaction(account);
+
+        accountRepository.save(account);
+        System.out.println(account.getBalance());
+        return TransactionMapper.mapToTransactionDTO(savedTransaction);
+    }
+
+    @Override
+    @Transactional
     public String revertTransaction(Long id) {
         Transaction transaction = transactionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Transaction not found"));
@@ -160,7 +193,8 @@ public class TransactionServiceImpl implements TransactionService {
             accountRepository.save(to_account);
             return "Transfer reverted";
         }
-        // Revert transaction in account
+
+        // For non-transfer transactions
         Account account = accountRepository.findByTransactionsContaining(transaction)
                 .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
 
@@ -169,6 +203,8 @@ public class TransactionServiceImpl implements TransactionService {
         } else {
             account.deposit(transaction.getAmount());
         }
+
+        // Remove transaction from account
         account.removeTransaction(transaction.getId());
         accountRepository.save(account);
         return "Transaction deleted";

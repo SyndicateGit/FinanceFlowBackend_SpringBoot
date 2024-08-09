@@ -52,6 +52,13 @@ public class TransactionController {
         List<TransactionDTO> transactions = transactionService.findAllTransactions();
         return ResponseEntity.ok(transactions);
     }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<TransactionDTO> updateTransaction(@PathVariable("id") Long id, @RequestBody TransactionDTO transactionDTO) {
+        TransactionDTO updatedTransaction = transactionService.updateTransaction(transactionDTO, id);
+        return ResponseEntity.ok(updatedTransaction);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<String> revertTransaction(@PathVariable("id") Long id) {
         String result = transactionService.revertTransaction(id);
