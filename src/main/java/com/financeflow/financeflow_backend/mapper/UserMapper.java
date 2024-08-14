@@ -22,7 +22,8 @@ public class UserMapper {
     public static UserDTO mapToUserDTO(User user){
         return new UserDTO(
                 user.getId(),
-                user.getName(),
+                user.getFirstName(),
+                user.getLastName(),
                 user.getEmail(),
                 user.getPassword(),
                 user.getPhone(),
@@ -34,7 +35,8 @@ public class UserMapper {
     public static User mapToUser(UserDTO userDTO){
         return new User(
                 userDTO.getId(),
-                userDTO.getName(),
+                userDTO.getFirstName(),
+                userDTO.getLastName(),
                 userDTO.getEmail(),
                 userDTO.getPassword(),
                 userDTO.getPhone(),
