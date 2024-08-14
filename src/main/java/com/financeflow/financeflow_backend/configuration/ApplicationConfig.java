@@ -1,4 +1,4 @@
-package com.financeflow.financeflow_backend.Auth;
+package com.financeflow.financeflow_backend.configuration;
 
 import com.financeflow.financeflow_backend.exception.ResourceNotFoundException;
 import com.financeflow.financeflow_backend.repository.UserRepository;

@@ -1,6 +1,6 @@
-package com.financeflow.financeflow_backend.Auth;
+package com.financeflow.financeflow_backend.security;
 
-import com.financeflow.financeflow_backend.service.UserService;
+import com.financeflow.financeflow_backend.security.JwtAuthFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

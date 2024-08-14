@@ -1,4 +1,4 @@
-package com.financeflow.financeflow_backend.Auth;
+package com.financeflow.financeflow_backend.request_response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

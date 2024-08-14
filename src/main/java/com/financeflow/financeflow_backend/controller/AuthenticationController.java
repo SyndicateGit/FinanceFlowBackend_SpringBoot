@@ -1,5 +1,9 @@
-package com.financeflow.financeflow_backend.Auth;
+package com.financeflow.financeflow_backend.controller;
 
+import com.financeflow.financeflow_backend.request_response.AuthenticationRequest;
+import com.financeflow.financeflow_backend.request_response.AuthenticationResponse;
+import com.financeflow.financeflow_backend.service.AuthenticationService;
+import com.financeflow.financeflow_backend.request_response.RegisterRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
