@@ -1,5 +1,6 @@
 package com.financeflow.financeflow_backend.service;
 
+import com.financeflow.financeflow_backend.exception.EntityAlreadyExistException;
 import com.financeflow.financeflow_backend.request_response.AuthenticationRequest;
 import com.financeflow.financeflow_backend.request_response.AuthenticationResponse;
 import com.financeflow.financeflow_backend.security.JwtService;
@@ -26,7 +27,10 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     public AuthenticationResponse register(RegisterRequest request) {
-        var user = User.builder()
+        if(isEmailOrPhoneAlreadyExists(request.getEmail(), request.getPhoneNumber())) {
+            throw new EntityAlreadyExistException("Email or phone number already exists");
+        }
+        User user = User.builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .email(request.getEmail())
@@ -55,5 +59,9 @@ public class AuthenticationService {
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
+    }
+
+    private boolean isEmailOrPhoneAlreadyExists(String email, String phone) {
+        return userRepository.existsByEmail(email) || userRepository.existsByPhone(phone);
     }
 }
