@@ -1,6 +1,8 @@
 package com.financeflow.financeflow_backend.service;
 
+import com.financeflow.financeflow_backend.dto.UserDTO;
 import com.financeflow.financeflow_backend.exception.EntityAlreadyExistException;
+import com.financeflow.financeflow_backend.mapper.UserMapper;
 import com.financeflow.financeflow_backend.request_response.AuthenticationRequest;
 import com.financeflow.financeflow_backend.request_response.AuthenticationResponse;
 import com.financeflow.financeflow_backend.security.JwtService;
@@ -27,7 +29,7 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     public AuthenticationResponse register(RegisterRequest request) {
-        if(isEmailOrPhoneAlreadyExists(request.getEmail(), request.getPhoneNumber())) {
+        if(isEmailOrPhoneAlreadyExists(request.getEmail(), request.getPhone())) {
             throw new EntityAlreadyExistException("Email or phone number already exists");
         }
         User user = User.builder()
@@ -35,7 +37,7 @@ public class AuthenticationService {
                 .lastName(request.getLastName())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .phone(request.getPhoneNumber())
+                .phone(request.getPhone())
                 .role(Role.USER)
                 .accounts(new ArrayList<Account>())
                 .build();
@@ -64,4 +66,5 @@ public class AuthenticationService {
     private boolean isEmailOrPhoneAlreadyExists(String email, String phone) {
         return userRepository.existsByEmail(email) || userRepository.existsByPhone(phone);
     }
+
 }
