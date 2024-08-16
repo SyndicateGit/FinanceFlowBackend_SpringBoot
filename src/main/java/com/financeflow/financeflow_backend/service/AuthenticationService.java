@@ -15,6 +15,8 @@ import com.financeflow.financeflow_backend.service.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +30,7 @@ public class AuthenticationService {
     private final UserServiceImpl userService;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+
     public AuthenticationResponse register(RegisterRequest request) {
         if(isEmailOrPhoneAlreadyExists(request.getEmail(), request.getPhone())) {
             throw new EntityAlreadyExistException("Email or phone number already exists");
@@ -67,4 +70,10 @@ public class AuthenticationService {
         return userRepository.existsByEmail(email) || userRepository.existsByPhone(phone);
     }
 
+    public UserDTO getUser() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return UserMapper.mapToUserDTO(user);
+    }
 }
