@@ -9,6 +9,7 @@ import com.financeflow.financeflow_backend.repository.AccountRepository;
 import com.financeflow.financeflow_backend.repository.UserRepository;
 import com.financeflow.financeflow_backend.service.AccountService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -109,4 +110,17 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.save(fromAccount);
         accountRepository.save(toAccount);
     }
+
+    @Override
+    public List<AccountDTO> getUserAcounts() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        List<Account> accounts = user.getAccounts();
+        return accounts.stream()
+                .map(AccountMapper::mapToAccountDTO)
+                .collect(Collectors.toList());
+    }
+
+
 }

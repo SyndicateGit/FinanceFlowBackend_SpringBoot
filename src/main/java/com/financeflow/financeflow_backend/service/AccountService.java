@@ -16,4 +16,6 @@ public interface AccountService {
     BigDecimal deposit(Long accountId, BigDecimal amount);
     BigDecimal withdrawal(Long accountId, BigDecimal amount);
     void transfer(Long fromAccountId, Long toAccountId, BigDecimal amount);
+
+    List<AccountDTO> getUserAcounts();
 }

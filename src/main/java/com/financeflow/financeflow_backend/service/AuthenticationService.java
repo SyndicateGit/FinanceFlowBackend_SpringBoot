@@ -70,10 +70,4 @@ public class AuthenticationService {
         return userRepository.existsByEmail(email) || userRepository.existsByPhone(phone);
     }
 
-    public UserDTO getUser() {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        return UserMapper.mapToUserDTO(user);
-    }
 }

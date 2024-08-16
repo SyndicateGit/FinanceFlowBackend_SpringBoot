@@ -27,9 +27,4 @@ public class AuthenticationController {
     ) {
         return ResponseEntity.ok(authenticationService.authenticate(request));
     }
-
-    @GetMapping("/fetchUser")
-    public ResponseEntity<UserDTO> getUser() {
-        return ResponseEntity.ok(authenticationService.getUser());
-    }
 }

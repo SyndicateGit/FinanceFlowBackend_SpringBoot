@@ -8,6 +8,7 @@ import com.financeflow.financeflow_backend.repository.AccountRepository;
 import com.financeflow.financeflow_backend.repository.UserRepository;
 import com.financeflow.financeflow_backend.service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import com.financeflow.financeflow_backend.entity.User;
 
@@ -90,5 +91,12 @@ public class UserServiceImpl implements UserService {
                         new ResourceNotFoundException("User not found with given id: " + id)
                 );
         userRepository.deleteById(id);
+    }
+
+    public UserDTO getUser() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return UserMapper.mapToUserDTO(user);
     }
 }
