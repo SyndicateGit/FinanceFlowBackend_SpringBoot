@@ -72,7 +72,7 @@ public class AccountController {
         return ResponseEntity.ok("Amount transferred successfully.");
     }
 
-    @GetMapping("/getUserAccounts")
+    @GetMapping("/fetchUserAccounts")
     public ResponseEntity<List<AccountDTO>> getUserAccounts() {
         List<AccountDTO> accounts = accountService.getUserAcounts();
         return ResponseEntity.ok(accounts);
