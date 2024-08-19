@@ -3,6 +3,7 @@ package com.financeflow.financeflow_backend.security;
 import com.financeflow.financeflow_backend.entity.User;
 import com.financeflow.financeflow_backend.exception.ResourceNotFoundException;
 import com.financeflow.financeflow_backend.repository.UserRepository;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -36,6 +37,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return;
         } else {
             jwt = authHeader.substring(7);
+            // Handle expired token with 401 before extracting user email (throws expired exception if expired).
+            try {
+                jwtService.isTokenExpired(jwt);
+            } catch (Exception e) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Token expired.");
+                return;
+            }
             userEmail = jwtService.extractUserEmail(jwt);
             // Check if user exist and is not already authenticated.
             if(userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
