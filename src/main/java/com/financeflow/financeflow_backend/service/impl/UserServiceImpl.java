@@ -9,6 +9,7 @@ import com.financeflow.financeflow_backend.repository.UserRepository;
 import com.financeflow.financeflow_backend.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.financeflow.financeflow_backend.entity.User;
 
@@ -18,8 +19,9 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
-    private UserRepository userRepository;
-    private AccountRepository accountRepository;
+    private final UserRepository userRepository;
+    private final AccountRepository accountRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public User initiateAccounts(User user) {
         Account savingsAccount = new Account();
@@ -35,10 +37,12 @@ public class UserServiceImpl implements UserService {
     }
     @Override
     public UserDTO createUser(UserDTO userDTO) {
+        if (isEmailOrPhoneAlreadyExists(userDTO.getEmail(), userDTO.getPhone())) {
+            throw new ResourceNotFoundException("Email or phone number already exists");
+        }
         User user = UserMapper.mapToUser(userDTO);
-        // This is to check if user is savable (unique email and phone)
-        // Don't want to initiate accounts if user is not savable.
-        User savableUser = userRepository.save(user);
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+
         // All users will have a savings, debit and credit account
         User initiatedUser = initiateAccounts(user);
         User  savedUser = userRepository.save(initiatedUser);
@@ -98,5 +102,9 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         return UserMapper.mapToUserDTO(user);
+    }
+
+    private boolean isEmailOrPhoneAlreadyExists(String email, String phone) {
+        return userRepository.existsByEmail(email) || userRepository.existsByPhone(phone);
     }
 }
