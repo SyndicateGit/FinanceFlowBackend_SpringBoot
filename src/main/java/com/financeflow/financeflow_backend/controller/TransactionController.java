@@ -64,4 +64,16 @@ public class TransactionController {
         String result = transactionService.revertTransaction(id);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+
+    @GetMapping("/userAccount/{accountId}")
+    public ResponseEntity<List<TransactionDTO>> getTransactionsByUserAccount(@PathVariable("accountId") Long accountId) {
+        List<TransactionDTO> transactions = transactionService.findTransactionsByUserAccount(accountId);
+        return ResponseEntity.ok(transactions);
+    }
+
+    @GetMapping("/userAccount")
+    public ResponseEntity<List<TransactionDTO>> getTransactionsByUser() {
+        List<TransactionDTO> transactions = transactionService.findTransactionsByUser();
+        return ResponseEntity.ok(transactions);
+    }
 }

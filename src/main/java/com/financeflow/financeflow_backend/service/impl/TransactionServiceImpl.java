@@ -6,6 +6,7 @@ import com.financeflow.financeflow_backend.entity.Transaction;
 import com.financeflow.financeflow_backend.entity.TransactionType;
 import com.financeflow.financeflow_backend.entity.User;
 import com.financeflow.financeflow_backend.exception.ResourceNotFoundException;
+import com.financeflow.financeflow_backend.exception.UnauthorizedException;
 import com.financeflow.financeflow_backend.mapper.TransactionMapper;
 import com.financeflow.financeflow_backend.repository.AccountRepository;
 import com.financeflow.financeflow_backend.repository.TransactionRepository;
@@ -14,6 +15,7 @@ import com.financeflow.financeflow_backend.service.TransactionService;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -208,6 +210,35 @@ public class TransactionServiceImpl implements TransactionService {
         account.removeTransaction(transaction.getId());
         accountRepository.save(account);
         return "Transaction deleted";
+    }
+
+    @Override
+    public List<TransactionDTO> findTransactionsByUserAccount(Long accountId) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        if(!accountBelongsToUser(user, accountId)){
+            throw new UnauthorizedException("Unauthorized");
+        }
+        return this.findTransactionsByAccountId(accountId);
+    }
+
+    @Override
+    public List<TransactionDTO> findTransactionsByUser() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        List<Account> accounts = user.getAccounts();
+        return accounts.stream()
+                .map(Account::getTransactions)
+                .flatMap(List::stream)
+                .map(TransactionMapper::mapToTransactionDTO)
+                .toList();
+    }
+
+    private boolean accountBelongsToUser(User user, Long accountId) {
+        return user.getAccounts().stream().map(Account::getId).anyMatch(id -> Objects.equals(id, accountId));
     }
 
 

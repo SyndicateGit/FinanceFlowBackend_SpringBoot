@@ -17,4 +17,8 @@ public interface TransactionService {
 
     TransactionDTO updateTransaction(TransactionDTO transactionDTO, Long id);
     String revertTransaction(Long id);
+
+    List<TransactionDTO> findTransactionsByUserAccount(Long accountId);
+
+    List<TransactionDTO> findTransactionsByUser();
 }
