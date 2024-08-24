@@ -1,13 +1,11 @@
 package com.financeflow.financeflow_backend.entity;
 
-import com.financeflow.financeflow_backend.repository.AccountRepository;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -46,6 +44,11 @@ public class User implements UserDetails {
 
     public User addBank(Bank bank){
         this.banks.add(bank);
+        return this;
+    }
+
+    public User removeBank(Bank bank){
+        this.banks.remove(bank);
         return this;
     }
 
