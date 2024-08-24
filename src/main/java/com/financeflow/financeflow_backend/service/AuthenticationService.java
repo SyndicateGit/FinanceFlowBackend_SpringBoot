@@ -1,6 +1,7 @@
 package com.financeflow.financeflow_backend.service;
 
 import com.financeflow.financeflow_backend.dto.UserDTO;
+import com.financeflow.financeflow_backend.entity.Bank;
 import com.financeflow.financeflow_backend.exception.EntityAlreadyExistException;
 import com.financeflow.financeflow_backend.mapper.UserMapper;
 import com.financeflow.financeflow_backend.request_response.AuthenticationRequest;
@@ -42,11 +43,10 @@ public class AuthenticationService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .phone(request.getPhone())
                 .role(Role.USER)
-                .accounts(new ArrayList<Account>())
+                .banks(new ArrayList<Bank>())
                 .build();
 
-        User initiatedUser = userService.initiateAccounts(user);
-        userRepository.save(initiatedUser);
+        userRepository.save(user);
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
                 .token(jwtToken)

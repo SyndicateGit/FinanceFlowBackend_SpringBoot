@@ -14,13 +14,13 @@ import java.util.Collections;
 
 @Component
 public class AccountMapper {
-    private static AccountRepository accountRepository;
-    private static UserRepository userRepository;
-    @Autowired
-    public AccountMapper(AccountRepository accountRepository, UserRepository userRepository) {
-        AccountMapper.accountRepository = accountRepository;
-        AccountMapper.userRepository = userRepository;
-    }
+//    private static AccountRepository accountRepository;
+//    private static UserRepository userRepository;
+//    @Autowired
+//    public AccountMapper(AccountRepository accountRepository, UserRepository userRepository) {
+//        AccountMapper.accountRepository = accountRepository;
+//        AccountMapper.userRepository = userRepository;
+//    }
 
     public static AccountDTO mapToAccountDTO(Account account) {
         return new AccountDTO(

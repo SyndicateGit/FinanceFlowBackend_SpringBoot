@@ -17,9 +17,9 @@ public class AccountController {
 
     private AccountService accountService;
 
-    @PostMapping("/create/{id}")
-    public ResponseEntity<AccountDTO> createAccount(@RequestBody AccountDTO accountDTO, @PathVariable("id") Long userId) {
-        AccountDTO savedAccount = accountService.createAccount(accountDTO, userId);
+    @PostMapping("/create/{userId}/{bankId}")
+    public ResponseEntity<AccountDTO> createAccount(@RequestBody AccountDTO accountDTO, @PathVariable("userId") Long userId, @PathVariable("bankId") Long bankId) {
+        AccountDTO savedAccount = accountService.createAccount(accountDTO, bankId, userId);
         return new ResponseEntity<>(savedAccount, HttpStatus.CREATED);
     }
 

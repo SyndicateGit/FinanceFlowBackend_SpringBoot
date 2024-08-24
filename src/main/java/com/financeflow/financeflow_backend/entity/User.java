@@ -42,10 +42,10 @@ public class User implements UserDetails {
     private Role role;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Account> accounts = new ArrayList<Account>();
+    private List<Bank> banks = new ArrayList<Bank>();
 
-    public User addAccount(Account account){
-        this.accounts.add(account);
+    public User addBank(Bank bank){
+        this.banks.add(bank);
         return this;
     }
 

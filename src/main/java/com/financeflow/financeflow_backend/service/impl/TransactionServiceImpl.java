@@ -1,10 +1,7 @@
 package com.financeflow.financeflow_backend.service.impl;
 
 import com.financeflow.financeflow_backend.dto.TransactionDTO;
-import com.financeflow.financeflow_backend.entity.Account;
-import com.financeflow.financeflow_backend.entity.Transaction;
-import com.financeflow.financeflow_backend.entity.TransactionType;
-import com.financeflow.financeflow_backend.entity.User;
+import com.financeflow.financeflow_backend.entity.*;
 import com.financeflow.financeflow_backend.exception.ResourceNotFoundException;
 import com.financeflow.financeflow_backend.exception.UnauthorizedException;
 import com.financeflow.financeflow_backend.mapper.TransactionMapper;
@@ -119,7 +116,11 @@ public class TransactionServiceImpl implements TransactionService {
     public List<TransactionDTO> findAllTransactionsByUserId(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        List<Account> accounts = user.getAccounts();
+        List<Bank> banks = user.getBanks();
+        List<Account> accounts = banks.stream()
+                .map(Bank::getAccounts)
+                .flatMap(List::stream)
+                .toList();
         return accounts.stream()
                 .map(Account::getTransactions)
                 .flatMap(List::stream)
@@ -228,17 +229,30 @@ public class TransactionServiceImpl implements TransactionService {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-
-        List<Account> accounts = user.getAccounts();
-        return accounts.stream()
+        List<Bank> banks = user.getBanks();
+        List<Account> accounts = banks.stream()
+                .map(Bank::getAccounts)
+                .flatMap(List::stream)
+                .toList();
+        List<Transaction> transactions = accounts.stream()
                 .map(Account::getTransactions)
                 .flatMap(List::stream)
+                .toList();
+
+        return transactions
+                .stream()
                 .map(TransactionMapper::mapToTransactionDTO)
                 .toList();
     }
 
     private boolean accountBelongsToUser(User user, Long accountId) {
-        return user.getAccounts().stream().map(Account::getId).anyMatch(id -> Objects.equals(id, accountId));
+        List<Bank> banks = user.getBanks();
+        List<Account> accounts = banks.stream()
+                .map(Bank::getAccounts)
+                .flatMap(List::stream)
+                .toList();
+
+        return accounts.stream().map(Account::getId).anyMatch(id -> Objects.equals(id, accountId));
     }
 
 

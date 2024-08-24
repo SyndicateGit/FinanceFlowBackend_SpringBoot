@@ -23,33 +23,6 @@ public class UserServiceImpl implements UserService {
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public User initiateAccounts(User user) {
-        Account savingsAccount = new Account();
-        savingsAccount.initiateSavingsAccount();
-        Account debitAccount = new Account();
-        debitAccount.initiateDebitAccount();
-        Account creditAccount = new Account();
-        creditAccount.initiateCreditAccount();
-        user.addAccount(savingsAccount);
-        user.addAccount(debitAccount);
-        user.addAccount(creditAccount);
-        return user;
-    }
-    @Override
-    public UserDTO createUser(UserDTO userDTO) {
-        if (isEmailOrPhoneAlreadyExists(userDTO.getEmail(), userDTO.getPhone())) {
-            throw new ResourceNotFoundException("Email or phone number already exists");
-        }
-        User user = UserMapper.mapToUser(userDTO);
-        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-
-        // All users will have a savings, debit and credit account
-        User initiatedUser = initiateAccounts(user);
-        User  savedUser = userRepository.save(initiatedUser);
-
-        return UserMapper.mapToUserDTO(savedUser);
-    }
-
     @Override
     public UserDTO getUserById(Long id) {
         User user = userRepository.findById(id)
@@ -67,6 +40,8 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
     }
 
+
+    @Override
     public UserDTO updateUser(Long id, UserDTO userDTO) {
         User user = userRepository.findById(id)
                 .orElseThrow(() ->
@@ -76,12 +51,14 @@ public class UserServiceImpl implements UserService {
         user.setFirstName(userDTO.getFirstName());
         user.setLastName(userDTO.getLastName());
         user.setEmail(userDTO.getEmail());
-        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         user.setPhone(userDTO.getPhone());
         user.setRole(userDTO.getRole());
 
         // Accounts left as is.
         // Update user is only for user info
+
+        // Doesn't update password
+        // Responsibility lies with authentication service
 
         userRepository.save(user);
 

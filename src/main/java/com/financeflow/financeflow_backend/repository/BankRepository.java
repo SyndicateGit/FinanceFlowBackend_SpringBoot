@@ -7,11 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findByBanksContaining(Bank bank);
-
-    Optional<User> findByEmail(String email);
-
-    boolean existsByEmail(String email);
-    boolean existsByPhone(String phone);
+public interface BankRepository extends JpaRepository<Bank, Long> {
+    Optional<Bank> findByAccountsContaining(Account account);
 }

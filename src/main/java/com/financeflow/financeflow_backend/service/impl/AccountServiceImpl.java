@@ -2,10 +2,12 @@ package com.financeflow.financeflow_backend.service.impl;
 
 import com.financeflow.financeflow_backend.dto.AccountDTO;
 import com.financeflow.financeflow_backend.entity.Account;
+import com.financeflow.financeflow_backend.entity.Bank;
 import com.financeflow.financeflow_backend.entity.User;
 import com.financeflow.financeflow_backend.exception.ResourceNotFoundException;
 import com.financeflow.financeflow_backend.mapper.AccountMapper;
 import com.financeflow.financeflow_backend.repository.AccountRepository;
+import com.financeflow.financeflow_backend.repository.BankRepository;
 import com.financeflow.financeflow_backend.repository.UserRepository;
 import com.financeflow.financeflow_backend.service.AccountService;
 import lombok.AllArgsConstructor;
@@ -21,14 +23,20 @@ import java.util.stream.Collectors;
 public class AccountServiceImpl implements AccountService {
     private AccountRepository accountRepository;
     private UserRepository userRepository;
+    private BankRepository bankRepository;
     @Override
-    public AccountDTO createAccount(AccountDTO accountDTO, Long userId) {
+    public AccountDTO createAccount(AccountDTO accountDTO, Long bankId, Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        Bank bank = user.getBanks().stream()
+                .filter(b -> b.getId().equals(bankId))
+                .findFirst()
+                .orElseThrow(() -> new ResourceNotFoundException("Bank not found"));
+
         Account account = AccountMapper.mapToAccount(accountDTO);
         Account savedAccount = accountRepository.save(account);
-        User updatedUser = user.addAccount(savedAccount);
-        userRepository.save(updatedUser);
+        Bank updatedBank = bank.addAccount(savedAccount);
+        bankRepository.save(updatedBank);
         return AccountMapper.mapToAccountDTO(savedAccount);
     }
 
@@ -43,7 +51,11 @@ public class AccountServiceImpl implements AccountService {
     public List<AccountDTO> getAccountsByUserId(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        List<Account> accounts = user.getAccounts();
+        List<Bank> banks = user.getBanks();
+        List<Account> accounts = banks.stream()
+                .map(Bank::getAccounts)
+                .flatMap(List::stream)
+                .toList();
         return accounts.stream()
                 .map(AccountMapper::mapToAccountDTO)
                 .collect(Collectors.toList());
@@ -73,13 +85,10 @@ public class AccountServiceImpl implements AccountService {
     public void deleteAccount(Long id) {
         Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
-        User user = userRepository.findByAccountsContaining(account)
+        Bank bank = bankRepository.findByAccountsContaining(account)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-
-        // Remove account from user cascades to remove account since orphanRemoval is true
-        // Deleting user also deletes account
-        user.getAccounts().remove(account);
-        userRepository.save(user);
+        bank.getAccounts().remove(account);
+        bankRepository.save(bank);
     }
 
     @Override
@@ -116,7 +125,11 @@ public class AccountServiceImpl implements AccountService {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        List<Account> accounts = user.getAccounts();
+        List<Bank> banks = user.getBanks();
+        List<Account> accounts = banks.stream()
+                .map(Bank::getAccounts)
+                .flatMap(List::stream)
+                .toList();
         return accounts.stream()
                 .map(AccountMapper::mapToAccountDTO)
                 .collect(Collectors.toList());

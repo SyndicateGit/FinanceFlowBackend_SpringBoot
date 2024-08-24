@@ -1,6 +1,5 @@
 package com.financeflow.financeflow_backend.dto;
 
-import com.financeflow.financeflow_backend.entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,12 +11,8 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDTO {
+public class BankDTO {
     private Long id;
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String phone;
-    private Role role;
-    private List<Long> bankIds;
+    private String name;
+    private List<Long> accountIds;
 }
