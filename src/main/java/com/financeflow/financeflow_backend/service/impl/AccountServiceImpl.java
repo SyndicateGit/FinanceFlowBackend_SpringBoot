@@ -25,12 +25,8 @@ public class AccountServiceImpl implements AccountService {
     private UserRepository userRepository;
     private BankRepository bankRepository;
     @Override
-    public AccountDTO createAccount(AccountDTO accountDTO, Long bankId, Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        Bank bank = user.getBanks().stream()
-                .filter(b -> b.getId().equals(bankId))
-                .findFirst()
+    public AccountDTO createAccount(AccountDTO accountDTO, Long bankId) {
+        Bank bank = bankRepository.findById(bankId)
                 .orElseThrow(() -> new ResourceNotFoundException("Bank not found"));
 
         Account account = AccountMapper.mapToAccount(accountDTO);

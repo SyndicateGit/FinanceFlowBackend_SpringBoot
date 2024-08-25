@@ -27,8 +27,7 @@ public class AccountMapper {
                 account.getId(),
                 account.getAccountType(),
                 account.getBalance(),
-                account.getCurrency(),
-                account.getTransactions().stream().map(Transaction::getId).toList()
+                account.getCurrency()
         );
     }
 

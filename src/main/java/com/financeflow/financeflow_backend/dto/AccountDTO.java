@@ -1,6 +1,7 @@
 package com.financeflow.financeflow_backend.dto;
 
 import com.financeflow.financeflow_backend.entity.Account;
+import com.financeflow.financeflow_backend.entity.AccountType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,8 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 public class AccountDTO {
     private Long id;
-    private Account.AccountType accountType;
+    private AccountType accountType;
     private BigDecimal balance;
     private String currency;
-    private List<Long> transactionIds;
 }

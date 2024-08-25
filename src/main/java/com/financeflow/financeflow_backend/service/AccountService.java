@@ -9,7 +9,7 @@ public interface AccountService {
     List<AccountDTO> getAccountsByUserId(Long userId);
     List<AccountDTO> getAllAccounts();
 
-    AccountDTO createAccount(AccountDTO accountDTO, Long bankId, Long userId);
+    AccountDTO createAccount(AccountDTO accountDTO, Long bankId);
     AccountDTO updateAccount(Long id, AccountDTO accountDTO);
     void deleteAccount(Long id);
 
