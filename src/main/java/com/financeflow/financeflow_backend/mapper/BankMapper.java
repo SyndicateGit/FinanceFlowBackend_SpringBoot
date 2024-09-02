@@ -12,7 +12,7 @@ public class BankMapper {
         return new BankDTO(
                 bank.getId(),
                 bank.getName(),
-                bank.getAccounts().stream().map(Account::getId).toList()
+                bank.getTotalBalance()
         );
     }
 

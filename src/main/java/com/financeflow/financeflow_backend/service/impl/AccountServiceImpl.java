@@ -83,7 +83,7 @@ public class AccountServiceImpl implements AccountService {
                 .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
         Bank bank = bankRepository.findByAccountsContaining(account)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        bank.getAccounts().remove(account);
+        bank.removeAccount(account);
         bankRepository.save(bank);
     }
 

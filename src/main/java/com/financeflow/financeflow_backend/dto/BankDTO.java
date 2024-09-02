@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Getter
@@ -14,5 +15,5 @@ import java.util.List;
 public class BankDTO {
     private Long id;
     private String name;
-    private List<Long> accountIds;
+    private BigDecimal totalBalance;
 }

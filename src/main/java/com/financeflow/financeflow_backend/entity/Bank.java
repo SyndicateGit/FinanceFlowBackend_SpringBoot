@@ -3,6 +3,7 @@ package com.financeflow.financeflow_backend.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,5 +27,21 @@ public class Bank {
     public Bank addAccount(Account account){
         this.accounts.add(account);
         return this;
+    }
+
+    public Bank removeAccount(Account account){
+        this.accounts.remove(account);
+        return this;
+    }
+
+    public BigDecimal getTotalBalance(){
+        return this.accounts.stream()
+                .map(account -> {
+                    if(account.getAccountType().equals(AccountType.CREDIT)){
+                        return account.getBalance().negate();
+                    }
+                    return account.getBalance();
+                })
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

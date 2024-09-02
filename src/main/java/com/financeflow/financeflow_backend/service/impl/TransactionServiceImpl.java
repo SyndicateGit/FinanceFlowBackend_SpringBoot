@@ -254,6 +254,4 @@ public class TransactionServiceImpl implements TransactionService {
 
         return accounts.stream().map(Account::getId).anyMatch(id -> Objects.equals(id, accountId));
     }
-
-
 }
