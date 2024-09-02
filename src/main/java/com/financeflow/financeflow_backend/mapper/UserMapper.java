@@ -27,8 +27,7 @@ public class UserMapper {
                 user.getLastName(),
                 user.getEmail(),
                 user.getPhone(),
-                user.getRole(),
-                user.getBanks().stream().map(Bank::getId).toList()
+                user.getRole()
         );
     }
 }
