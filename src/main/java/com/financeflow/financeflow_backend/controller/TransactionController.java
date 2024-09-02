@@ -71,7 +71,7 @@ public class TransactionController {
         return ResponseEntity.ok(transactions);
     }
 
-    @GetMapping("/userAccount")
+    @GetMapping("/")
     public ResponseEntity<List<TransactionDTO>> getTransactionsByUser() {
         List<TransactionDTO> transactions = transactionService.findTransactionsByUser();
         return ResponseEntity.ok(transactions);
