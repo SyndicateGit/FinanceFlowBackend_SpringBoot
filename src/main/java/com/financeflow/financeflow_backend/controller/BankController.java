@@ -44,7 +44,7 @@ public class BankController {
         bankService.deleteBank(id);
     }
 
-    @GetMapping("/userBanks")
+    @GetMapping("/")
     public List<BankDTO> getUserBanks() {
         return bankService.getUserBanks();
     }

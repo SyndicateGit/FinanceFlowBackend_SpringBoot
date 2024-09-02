@@ -41,7 +41,7 @@ public class UserController {
         return ResponseEntity.ok("User deleted successfully.");
     }
 
-    @GetMapping("/fetchUser")
+    @GetMapping("/")
     public ResponseEntity<UserDTO> getUser() {
         return ResponseEntity.ok(userService.getUser());
     }
